@@ -1,5 +1,6 @@
 use iced::widget::{container, row, text, column, vertical_space, vertical_rule, self};
 use iced::{executor, Application, Command, Length, Settings, Theme, Element, Color, theme, Background};
+mod streamer_control_button;
 fn main() {
     App::run(Settings {
         window:
@@ -38,37 +39,37 @@ impl Application for App {
 
     fn update(&mut self, message: Message) -> Command<Message> {
         match message {
-            Message::EventOccured(event) => {},
+            Message::EventOccured(_event) => {},
         }
         Command::none()
     }
 
     fn view(&self) -> Element<Message> {
-        iced_lazy::responsive(|_size| {
+        iced_lazy::responsive(|size| {
             let button_area = container(
                 column![
                     row![ 
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
                     ].spacing(10),
                     vertical_space(Length::Units(10)), 
                     row![ 
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
                     ].spacing(10),
                     vertical_space(Length::Units(10)), 
                     row![ 
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
-                        container(row![]).width(Length::Units(75)).height(Length::Units(75)).style(theme::Container::Custom(Box::new(CustomContainerStyle {}))),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
+                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
                     ].spacing(10),
                 ]
             )
@@ -76,7 +77,8 @@ impl Application for App {
             .height(Length::Fill)
             .center_x()
             .center_y();
-            let plugin_area = widget::column![text("hello").size(50)].height(Length::Fill).width(Length::Units(256 + ((_size.width / 256.0) * 10.0) as u16));
+
+            let plugin_area = widget::column![text("hello").size(50)].height(Length::Fill).width(Length::Units(256 + ((size.width / 256.0) * 10.0) as u16));
             row![
                 button_area,
                 vertical_rule(2),
@@ -84,6 +86,8 @@ impl Application for App {
             ].width(Length::Fill).height(Length::Fill).into()
 
         }).into()
+
+        
 
 
     }
