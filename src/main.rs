@@ -1,5 +1,5 @@
-use iced::widget::{container, row, text, column, vertical_space, vertical_rule, self};
-use iced::{executor, Application, Command, Length, Settings, Theme, Element, Color, theme, Background};
+use iced::widget::{container, row, column, vertical_space, vertical_rule, rule, self};
+use iced::{executor, Application, Command, Length, Settings, Theme, Element, Color, theme};
 mod streamer_control_button;
 fn main() {
     App::run(Settings {
@@ -14,11 +14,13 @@ fn main() {
 
 #[derive(Debug, Clone)]
 enum Message {
-    EventOccured(iced_native::Event),
+    NativeEventOccured(iced_native::Event),
+    DragStarted,
 }
 
 struct App {
     theme: Theme,
+    currently_dragged: Option<String>,
 } 
 
 impl Application for App {
@@ -26,10 +28,10 @@ impl Application for App {
     type Message = Message;
     type Theme = Theme;
     type Flags = ();
-
     fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
        (App {
            theme: Theme::Dark,
+           currently_dragged: None,
        }, Command::none()) 
     }
 
@@ -39,7 +41,10 @@ impl Application for App {
 
     fn update(&mut self, message: Message) -> Command<Message> {
         match message {
-            Message::EventOccured(_event) => {},
+            Message::NativeEventOccured(_event) => {},
+            Message::DragStarted => {
+                println!("DragStarted");
+            }
         }
         Command::none()
     }
@@ -49,47 +54,33 @@ impl Application for App {
             let button_area = container(
                 column![
                     row![ 
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
                     ].spacing(10),
                     vertical_space(Length::Units(10)), 
                     row![ 
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
                     ].spacing(10),
                     vertical_space(Length::Units(10)), 
                     row![ 
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
-                        streamer_control_button::StreamerButton::new(75.0, 15.0, 0.0, || { String::from("This is from the closure callback") }),
                     ].spacing(10),
+                    
                 ]
             )
-            .width(Length::Fill)
+            .width(Length::FillPortion(4))
             .height(Length::Fill)
             .center_x()
             .center_y();
-
-            let plugin_area = widget::column![text("hello").size(50)].height(Length::Fill).width(Length::Units(256 + ((size.width / 256.0) * 10.0) as u16));
+            let plugin_area = widget::column![
+                streamer_control_button::PluginButton::new(256.0 + (size.width / 256.0) * 10.0, 50.0, "Hello".to_string()).on_drag(Message::DragStarted),
+                ]
+                .height(Length::Fill).width(Length::Units(256 + ((size.width / 256.0) * 10.0) as u16)).spacing(2);
             row![
                 button_area,
-                vertical_rule(2),
+                vertical_rule(2).style(theme::Rule::Custom(Box::new(CustomStyle {}))),
                 plugin_area,
-            ].width(Length::Fill).height(Length::Fill).into()
-
-        }).into()
-
-        
-
-
+            ].width(Length::Fill).height(Length::Fill)
+        }.into()).into()
+    }
+    fn subscription(&self) -> iced::Subscription<Self::Message> {
+        iced_native::subscription::events().map(Message::NativeEventOccured)
     }
 
     fn theme(&self) -> Theme {
@@ -97,13 +88,13 @@ impl Application for App {
     }
 
 }
-struct CustomContainerStyle {}
+struct CustomStyle {}
 
-impl container::StyleSheet for CustomContainerStyle {
+
+impl rule::StyleSheet for CustomStyle {
     type Style = iced::Theme;
-    
 
-    fn appearance(&self, _style: &Self::Style) -> container::Appearance {
-        container::Appearance { background: Some(Background::Color(Color::from_rgb(0.11, 0.11, 0.11))), border_radius: 15.0, ..Default::default()}
+    fn appearance(&self, _style: &Self::Style) -> rule::Appearance {
+        rule::Appearance {color: Color::WHITE, width: 1, radius: 0.0, fill_mode: rule::FillMode::Full }
     }
 }
