@@ -15,7 +15,7 @@ fn main() {
 #[derive(Debug, Clone)]
 enum Message {
     NativeEventOccured(iced_native::Event),
-    DragStarted,
+    DragSystem(streamer_control_button::DragEvent),
 }
 
 struct App {
@@ -42,8 +42,8 @@ impl Application for App {
     fn update(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::NativeEventOccured(_event) => {},
-            Message::DragStarted => {
-                println!("DragStarted");
+            Message::DragSystem(idk)=> {
+                println!("{:?}", idk);
             }
         }
         Command::none()
@@ -55,10 +55,10 @@ impl Application for App {
                 column![
                     row![ 
                     ].spacing(10),
-                    vertical_space(Length::Units(10)), 
+                    vertical_space(Length::Fixed(10.0)), 
                     row![ 
                     ].spacing(10),
-                    vertical_space(Length::Units(10)), 
+                    vertical_space(Length::Fixed(10.0)), 
                     row![ 
                     ].spacing(10),
                     
@@ -69,9 +69,9 @@ impl Application for App {
             .center_x()
             .center_y();
             let plugin_area = widget::column![
-                streamer_control_button::PluginButton::new(256.0 + (size.width / 256.0) * 10.0, 50.0, "Hello".to_string()).on_drag(Message::DragStarted),
+                streamer_control_button::PluginButton::new(256.0 + (size.width / 256.0) * 10.0, 50.0, "Hello".to_string()).on_drag(Message::DragSystem),
                 ]
-                .height(Length::Fill).width(Length::Units(256 + ((size.width / 256.0) * 10.0) as u16)).spacing(2);
+                .height(Length::Fill).width(Length::Fixed(256.0 + ((size.width / 256.0) * 10.0) )).spacing(2);
             row![
                 button_area,
                 vertical_rule(2).style(theme::Rule::Custom(Box::new(CustomStyle {}))),
